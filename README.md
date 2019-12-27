@@ -1,1 +1,3 @@
-# jsbox-dialogs
+# JSBoxDialogs
+
+解决JSBox缺少alert和dialogs的问题
