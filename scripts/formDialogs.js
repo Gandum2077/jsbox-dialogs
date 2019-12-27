@@ -59,7 +59,7 @@
  * 
  */
 
-const src_cross_64x64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAQAAAAAYLlVAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAAHdElNRQfjDBsALRrDpF2GAAABv0lEQVRo3sWZzVLCMBRGjy7E58EZUISqqOiMP0/JloUrnwoHlB9d1UVlJGlLm+TmprsMA+e0NO293wWADlN6aB49pnR2ixPeyFnQV8N3mZPzzuk/PldUKPD5TmH2t9BS6LPYI87gka2hcB4Vf8bHHu2HV4AHNQUb/7L7wFRYRlKoxesoHMTHV2jEA0wMhRWZGP6CZTM+nkJrfBwFG//c9IUJG0PhShD/3YyXVfDCyykMfPEA98EKNv7J9QdshWtdfJjCgM9wvL+Cid9w54sHyFg5Koji3RUupfFuClHwhcKXoXCjiy8rrCsUTPxaFt+sYONvpfEAo1oFFXy9ghq+WmGoiQcYszZ2xKrh5ox+FfbxYw18nYIiHmBoKXjjjz0FjjTPtnwk/gvqb8LoWxCSb8PED6Is7aM4a/0yEn8VH8aXFYSLkQJvlmVNBYl4PdSmKoxYESYtSt2aE/GuwL03EmvL/PCiCiHNqUBvHBZSBIUT4fhgBZmIJiAh2grgywotIroqfFhS6BRSyuOdFeIE1q2C6nj41gqJ4/r4Y5uDCjqDq8qBlR6+UJiXFWx83Mlht6yQfHCZfHSbfHgNScf3vxXvVhPvXnwTAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE5LTEyLTI3VDAwOjQ1OjI2KzAwOjAwmwHCiwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxOS0xMi0yN1QwMDo0NToyNiswMDowMOpcejcAAAAZdEVYdFNvZnR3YXJlAHd3dy5pbmtzY2FwZS5vcmeb7jwaAAAAAElFTkSuQmCC"
+baseViewsGenerator = require("./baseViews")
 
 // 计算特定字号的文字长度
 // 此函数不应该用于处理超长文本
@@ -73,79 +73,7 @@ function getTextWidth(text, fontSize = 20, fontName = null) {
     })
 }
 
-function renderTitleBarView(title) {
-    const titleBarView = {
-        type: "view",
-        props: {
-            id: "titleBar",
-            bgcolor: $color("white")
-        },
-        views: [
-            {
-                type: "button",
-                props: {
-                    id: 'buttonCancel',
-                    type: 1,
-                    image: $image(src_cross_64x64).alwaysTemplate,
-                    tintColor: $color("#007aff"),
-                    imageEdgeInsets: $insets(7.5, 7.5, 7.5, 7.5)
-
-                },
-                layout: function(make, view) {
-                    make.centerY.equalTo(view.super).offset(-0.25)
-                    make.size.equalTo($size(32, 32))
-                    make.left.inset(15)
-                }
-            },
-            {
-                type: "label",
-                props: {
-                    text: title,
-                    font: $font('bold', 20),
-                    align: $align.center
-                },
-                layout: function(make, view) {
-                    make.size.equalTo($size(300,32))
-                    make.centerY.equalTo(view.super).offset(-0.25)
-                    make.centerX.equalTo(view.super)
-                }
-            },
-            {
-                type: "button",
-                props: {
-                    id: 'buttonConfirm',
-                    type: 1,
-                    title: 'Done',
-                    font: $font(17),
-                    titleColor: $color("#007aff")
-                },
-                layout: function(make, view) {
-                    make.centerY.equalTo(view.super).offset(-0.25)
-                    make.size.equalTo($size(50, 32))
-                    make.right.inset(15)
-                }
-            },
-            {
-                type: "type",
-                props: {
-                    bgcolor: $color("#a9a9ad")
-                },
-                layout: function(make, view) {
-                    make.left.right.bottom.inset(0)
-                    make.height.equalTo(0.5)
-                }
-            }
-        ],
-        layout: function(make, view) {
-            make.top.left.right.inset(0)
-            make.height.equalTo(56.5)
-        }
-    }
-    return titleBarView
-}
-
-
-function renderFieldView(field, frame = frame) {
+function defineFieldView(field, frame = frame) {
     const type = field.type
     const key = field.key
     const title = field.title
@@ -547,7 +475,7 @@ function renderFieldView(field, frame = frame) {
                 titleColor: $color('#007aff'),
                 bgcolor: $color('white'),
                 align: $align.left,
-                type: 1
+                radius: 0
             },
             layout: function(make, view) {
                 make.top.bottom.inset(0)
@@ -576,7 +504,7 @@ function renderFieldView(field, frame = frame) {
     return fieldView
 }
 
-function renderSectionView(section, frameX, frameY, width = 500) {
+function defineSectionView(section, frameX, frameY, width = 500) {
     let cumulativeHeight = 0
     const views = []
     const header = {
@@ -605,7 +533,7 @@ function renderSectionView(section, frameX, frameY, width = 500) {
             cumulativeHeight += 0.5
             views.push(line)
         }
-        const fieldView = renderFieldView(field, frame = $rect(0, cumulativeHeight, width, 89 / 2))
+        const fieldView = defineFieldView(field, frame = $rect(0, cumulativeHeight, width, 89 / 2))
         cumulativeHeight += 89 / 2
         views.push(fieldView)
         if (parseInt(idx) === section.fields.length - 1) {
@@ -663,18 +591,17 @@ function renderSectionView(section, frameX, frameY, width = 500) {
     
 }
 
-async function formDialogs(sections, title='') {
-    const titleBarView = renderTitleBarView(title)
+function defineScrollView(sections) {
     const sectionViews = []
     let frameX = 0
     let frameY = 20
     for (let section of sections) {
-        const sectionView = renderSectionView(section, frameX, frameY, width = 500)
+        const sectionView = defineSectionView(section, frameX, frameY, width = 500)
         frameY += sectionView.props.frame.height
         sectionViews.push(sectionView)
         frameY += 20
     }
-    const scollView = {
+    const scrollView = {
         type: "scroll",
         props: {
             contentSize: $size(0, frameY),
@@ -686,39 +613,16 @@ async function formDialogs(sections, title='') {
             make.top.equalTo($("titleBar").bottom)
         }
     }
-    
-    const formDialogsContent = {
-        props: {
+    return scrollView
+}
 
-            radius: 10
-        },
-        views: [titleBarView, scollView],
-        layout: function(make, view) {
-            make.size.equalTo($size(500, 556))
-            make.center.equalTo(view.super)
-        }
-    }
-    const maskView = {
-        props: {
-            bgcolor: $rgba(0, 0, 0, 0.2)
-        },
-        layout: $layout.fill
-    }
-    
-    const formDialogs = {
-        props: {
-            id: 'formDialogs_854cc31e'
-        },
-        views: [maskView, formDialogsContent],
-        layout: $layout.fill
-    }
-    
+async function formDialogs(sections, title='') {
     return new Promise((resolve, reject) => {
         const cancelEvent = function(sender) {
             reject('canceled')
             sender.super.super.super.remove()
         }
-        const confrimEvent = function(sender) {
+        const confirmEvent = function(sender) {
             const scroll = sender.super.super.super.get('scroll')
             const result = {}
             for (let sectionView of scroll.views) {
@@ -731,15 +635,28 @@ async function formDialogs(sections, title='') {
             resolve(result)
             sender.super.super.super.remove()
         }
+        const titleBarView = baseViewsGenerator.defineTitleBarView(title, cancelEvent, confirmEvent)
+        const scrollView = defineScrollView(sections)
+        const maskView = baseViewsGenerator.maskView
+        const formDialogsContent = {
+            props: {
+                radius: 10
+            },
+            views: [titleBarView, scrollView],
+            layout: function(make, view) {
+                make.size.equalTo($size(500, 556))
+                make.center.equalTo(view.super)
+            }
+        }
+        
+        const formDialogs = {
+            props: {
+                id: 'formDialogs'
+            },
+            views: [maskView, formDialogsContent],
+            layout: $layout.fill
+        }
         $ui.window.add(formDialogs)
-        $ui.window.get('formDialogs_854cc31e').get('buttonCancel').addEventHandler({
-            events: $UIEvent.touchDown,
-            handler: cancelEvent
-        })
-        $ui.window.get('formDialogs_854cc31e').get('buttonConfirm').addEventHandler({
-            events: $UIEvent.touchDown,
-            handler: confrimEvent
-        })
     })
 }
 
