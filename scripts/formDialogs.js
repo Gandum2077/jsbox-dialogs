@@ -9,13 +9,17 @@
  *      footer: string  // 脚注行，可选。高度可变。
  * fields为Array，里面的field定义:
  *      通用:
- *          type: string  // 类型，必要。包括'string', 'number', 'integer', 'password', 'boolean', 'slider', 'segmentedControl', 'datetime', 'info', 'link', 'action'
+ *          type: string  // 类型，必要。包括'string', 'number', 'integer', 'password', 
+ *                           'boolean', 'slider', 'segmentedControl', 'datetime', 
+ *                           'info', 'link', 'action'
  *          key: string   // 键，必要。
  *          title: string // 标题，可选。供人阅读的标题。
  *          value: *      // 缺省值，可选。在下面专项里有详解。
  *          titleColor: $color  // title颜色，可选。
  *          tintColor: $color  // icon颜色，可选。
  *          icon: $image  // 图标，可选。
+ *          iconEdgeInsets: $insets // 图标边距，可选。icon的size是锁定为$size(89/2, 89/2)的，
+ *                                     因此提供此参数缩小icon，默认$insets(12, 12, 12, 12)
  * 
  *      专项：  // 除了一律可选，不标注的即对应原控件的属性
  *      string, number, integer, password:
@@ -149,15 +153,27 @@ function renderFieldView(field, frame = frame) {
     const titleColor = field.titleColor || $color('black')
     const tintColor = field.tintColor || $color('#007aff')
     const icon = field.icon
+    const iconEdgeInsets = field.iconEdgeInsets || $insets(12, 12, 12, 12)
     let iconView;
     if (icon) {
         iconView = {
-            type: "image",
+            type: "view",
             props: {
-                id: 'icon',
-                tintColor: tintColor,
-                image: icon.alwaysTemplate
+                id: 'icon'
             },
+            views: [
+                {
+                    type: "image",
+                    props: {
+                        id: 'icon',
+                        tintColor: tintColor,
+                        image: icon.alwaysTemplate
+                    },
+                    layout: function(make, view) {
+                        make.edges.insets(iconEdgeInsets)
+                    }
+                }
+            ],
             layout: function(make, view) {
                 make.size.equalTo($size(89/2, 89/2))
                 make.left.inset(10)
