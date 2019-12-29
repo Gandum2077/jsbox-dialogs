@@ -69,15 +69,16 @@ async function loginAlert(title) {
         const titleView = baseViewsGenerator.defineTitleView(title)
         const inputs = defineInputs()
         const buttonCancel = baseViewsGenerator.defineButtonCancel(sender => {
-            reject('canceled')
             sender.super.super.remove()
+            reject('canceled')
         })
         const buttonConfirm = baseViewsGenerator.defineButtonConfirm(sender => {
-            resolve({
-                account: sender.super.get("username").text,
+            const result = {
+                username: sender.super.get("username").text,
                 password: sender.super.get("password").text
-            })
+            }
             sender.super.super.remove()
+            resolve(result)
         })
         const maskView = baseViewsGenerator.maskView
         const content = {
