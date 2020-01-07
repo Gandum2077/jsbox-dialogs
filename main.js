@@ -74,19 +74,16 @@ const sections = [
             {
                 type: 'info',
                 title: 'info',
-                key: 'info',
                 value: 'this is info'
             },
             {
                 type: 'link',
                 title: 'link',
-                key: 'link',
                 value: 'https://apple.com'
             },
             {
                 type: 'action',
-                title: 'action',
-                key: 'action',
+                buttonTitle: 'action',
                 value: (() => console.info(1))
             }
         ],
