@@ -61,7 +61,7 @@
  * 
  */
 
-baseViewsGenerator = require("./baseViews")
+const baseViewsGenerator = require("./baseViews")
 
 // 计算特定字号的文字长度
 // 此函数不应该用于处理超长文本
@@ -352,7 +352,7 @@ function defineFieldView(field, frame = frame) {
                         changed: function(sender) {
                             const adjustedValue = sender.value.toFixed(decimal)
                             sender.super.get('sliderValue').text = adjustedValue
-                            sender.super.super.info = {key: sender.super.super.info.key, value: adjustedValue, type: sender.super.super.info.type}
+                            sender.super.super.info = {key: sender.super.super.info.key, value: parseFloat(adjustedValue), type: sender.super.super.info.type}
                         }
                     }
                 }
@@ -365,7 +365,7 @@ function defineFieldView(field, frame = frame) {
         }
     } else if (type === 'segmentedControl') {
         const items = field.items
-        const index = value || -1
+        const index = (value === undefined) ? -1 : value
         valueView = {
             type: "tab",
             props: {
@@ -457,7 +457,9 @@ function defineFieldView(field, frame = frame) {
                     layout: $layout.fill,
                     events: {
                         tapped: function(sender) {
-                            console.info(2)
+                            $safari.open({
+                                url: value
+                            })
                         }
                     }
                 }
