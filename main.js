@@ -48,7 +48,7 @@ const sections = [
             },
             {
                 type: 'slider',
-                title: 'slider',
+                title: 'sliderxxxxxxxxx',
                 key: 'slider',
                 value: 0.1
             },
@@ -83,7 +83,18 @@ const sections = [
             },
             {
                 type: 'action',
-                buttonTitle: 'action',
+                buttonTitle: 'action0',
+                icon: $image(src_cross_64x64),
+                iconEdgeInsets: $insets(15, 15, 15, 15),
+                value: (() => console.info(0))
+            },
+            {
+                type: 'action',
+                title: "action1",
+                buttonType: 1,
+                buttonTitle: 'action1',
+                icon: $image(src_cross_64x64),
+                iconEdgeInsets: $insets(15, 15, 15, 15),
                 value: (() => console.info(1))
             }
         ],
@@ -91,8 +102,16 @@ const sections = [
     }
 ]
 
+if ($device.isIpad) {
+    $app.rotateDisabled = false
+} else {
+    $app.rotateDisabled = false
+}
+
 $ui.render({
     props:{
+        navBarHidden: true,
+        statusBarStyle: 0,
         bgcolor: $color('white')
     },
     views: [
