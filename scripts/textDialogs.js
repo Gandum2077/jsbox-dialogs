@@ -1,23 +1,12 @@
 const { maskView, defineTitleBarView } = require("./baseViews");
 
-async function textDialogs({ title = "", text = "" }) {
-  let layout;
-  let width;
-  if ($device.isIpad) {
-    width = 500;
-    layout = function(make, view) {
-      make.width.equalTo(width);
-      make.height.equalTo(556);
-      make.center.equalTo(view.super);
-    };
-  } else {
-    width = $device.info.screen.width;
-    layout = function(make, view) {
-      make.width.equalTo(width);
-      make.top.bottom.inset(18);
-      make.center.equalTo(view.super);
-    };
-  }
+async function textDialogsSheet({ title = "", text = "" }) {
+  const width = 500;
+  const layout = function(make, view) {
+    make.width.equalTo(width);
+    make.height.equalTo(556);
+    make.center.equalTo(view.super);
+  };
   return new Promise((resolve, reject) => {
     const cancelEvent = function(sender) {
       sender.super.super.super.remove();
@@ -44,6 +33,11 @@ async function textDialogs({ title = "", text = "" }) {
       layout: function(make, view) {
         make.left.right.bottom.inset(0);
         make.top.equalTo($("titleBar").bottom);
+      },
+      events: {
+        ready: sender => {
+          sender.focus()
+        }
       }
     };
     const content = {
@@ -62,6 +56,59 @@ async function textDialogs({ title = "", text = "" }) {
     };
     $ui.window.add(textDialogs);
   });
+}
+
+async function textDialogsPush({ title = "", text = "" }) {
+  let done = false
+  let result = text
+  return new Promise((resolve, reject) => {
+    $ui.push({
+      props: {
+        title,
+        navButtons: [{
+          title: "Done",
+          handler: () => {
+            done = true
+            result = $ui.window.get("textView").text
+            $ui.pop()
+          }
+        }]
+      },
+      views: [
+        {
+          type: "text",
+          props: {
+            id: "textView",
+            text
+          },
+          layout: $layout.fillSafeArea,
+          events: {
+            ready: sender => {
+              //sender.focus()
+              // 自动聚焦会有动画不顺畅的bug
+            }
+          }
+        }
+      ],
+      events: {
+        dealloc: () => {
+          if (done) {
+            resolve(result)
+          } else {
+            reject("cancel")
+          }
+        }
+      }
+    })
+  });
+}
+
+async function textDialogs({ title = "", text = "" }) {
+  if ($device.isIpad) {
+    return textDialogsSheet({ title, text })
+  } else {
+    return textDialogsPush({ title, text })
+  }
 }
 
 module.exports = textDialogs;

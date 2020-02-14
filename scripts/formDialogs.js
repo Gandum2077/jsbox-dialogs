@@ -1,6 +1,6 @@
 /**
  * 实现formDialogs
- * size锁定为(500, 556)
+ * iPad size锁定为(500, 556) iPhone 通过$ui.push显示
  * @param {object} sections 定义formDialogs的内容
  * @param {?string} title 标题，将显示在titleBar
  * sections为Array，里面的section定义:
@@ -772,30 +772,23 @@ function defineScrollView(sections, width = 500) {
     views: sectionViews,
     layout: function(make, view) {
       make.left.right.bottom.inset(0);
-      make.top.equalTo($("titleBar").bottom);
+      if ($("titleBar")) {
+        make.top.equalTo($("titleBar").bottom);
+      } else {
+        make.top.inset(0);
+      }
     }
   };
   return scrollView;
 }
 
-async function formDialogs({ sections, title = "" }) {
-  let layout;
-  let width;
-  if ($device.isIpad) {
-    width = 500;
-    layout = function(make, view) {
-      make.width.equalTo(width);
-      make.height.equalTo(556);
-      make.center.equalTo(view.super);
-    };
-  } else {
-    width = $device.info.screen.width;
-    layout = function(make, view) {
-      make.width.equalTo(width);
-      make.top.bottom.inset(18);
-      make.center.equalTo(view.super);
-    };
-  }
+async function formDialogsSheet({ sections, title = "" }) {
+  const width = 500;
+  const layout = function(make, view) {
+    make.width.equalTo(width);
+    make.height.equalTo(556);
+    make.center.equalTo(view.super);
+  };
   return new Promise((resolve, reject) => {
     const cancelEvent = function(sender) {
       sender.super.super.super.remove();
@@ -840,6 +833,58 @@ async function formDialogs({ sections, title = "" }) {
     };
     $ui.window.add(formDialogs);
   });
+}
+
+async function formDialogsPush({ sections, title = "" }) {
+  const width = $device.info.screen.width;
+  let done = false
+  let result
+  return new Promise((resolve, reject) => {
+    $ui.push({
+      props: {
+        title,
+        navButtons: [{
+          title: "Done",
+          handler: () => {
+            done = true
+            const scroll = $ui.window.get("scroll");
+            result = {};
+            for (let sectionView of scroll.views) {
+              const excludedTypes = ["action", "info", "link"];
+              const fieldViews = sectionView.views.filter(n => n.info && n.info.key);
+              fieldViews.map(n => {
+                if (n.info.key && !(excludedTypes.indexOf(n.info.type) !== -1)) {
+                  result[n.info.key] = n.info.value;
+                }
+                return;
+              });
+            }
+            $ui.pop()
+          }
+        }]
+      },
+      views: [
+        defineScrollView(sections, width)
+      ],
+      events: {
+        dealloc: () => {
+          if (done) {
+            resolve(result)
+          } else {
+            reject("cancel")
+          }
+        }
+      }
+    })
+  });
+}
+
+async function formDialogs({ sections, title = "" }) {
+  if ($device.isIpad) {
+    return formDialogsSheet({ sections, title })
+  } else {
+    return formDialogsPush({ sections, title })
+  }
 }
 
 module.exports = formDialogs;
