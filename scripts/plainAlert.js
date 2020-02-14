@@ -5,23 +5,13 @@ const {
   UIAlertController
 } = require("./UIAlert");
 
-function inputAlert({ title = "", message, placeholder }) {
+function plainAlert({ title = "", message, placeholder }) {
   return new Promise((resolve, reject) => {
     const alertVC = new UIAlertController(
       title,
       message,
       UIAlertControllerStyle.Alert
     );
-    alertVC.addTextField({
-      placeholder: placeholder,
-      events: {
-        shouldReturn: () => {
-          const input = alertVC.getText(0);
-          const isValid = input.length > 0;
-          return isValid;
-        }
-      }
-    });
 
     alertVC.addAction(
       new UIAlertAction("Cancel", UIAlertActionStyle.Destructive, cancelEvent)
@@ -32,8 +22,7 @@ function inputAlert({ title = "", message, placeholder }) {
     alertVC.present();
 
     function confirmEvent() {
-      const input = alertVC.getText(0);
-      resolve(input);
+      resolve("ok");
     }
     function cancelEvent() {
       reject("cancel");
@@ -41,4 +30,4 @@ function inputAlert({ title = "", message, placeholder }) {
   });
 }
 
-module.exports = inputAlert;
+module.exports = plainAlert;
