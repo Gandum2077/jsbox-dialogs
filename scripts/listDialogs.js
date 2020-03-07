@@ -1,204 +1,134 @@
-const { maskView, defineTitleBarView } = require("./baseViews");
+const Sheet = require("./components/sheet");
+const BaseView = require("./components/baseView");
 
-const template = {
-  props: {
-    bgcolor: $color("white")
-  },
-  views: [
-    {
-      type: "label",
+class ListView extends BaseView {
+  constructor({ items = [], multiSelectEnabled = false, values }) {
+    super();
+    this.items = items;
+    this.multiSelectEnabled = multiSelectEnabled;
+    this._values = values;
+  }
+
+  _defineView() {
+    const classThis = this;
+    const list = {
+      type: "list",
       props: {
-        id: "label"
-      },
-      layout: (make, view) => {
-        make.top.bottom.inset(0);
-        make.left.inset(20);
-        make.right.inset(50);
-      }
-    },
-    {
-      type: "image",
-      props: {
-        id: "checkmark",
-        symbol: "checkmark",
-        contentMode: 1
-      },
-      layout: (make, view) => {
-        make.top.bottom.right.inset(10);
-        make.width.equalTo(30);
-      }
-    }
-  ]
-};
-
-function getData(items, values) {
-  return items.map((n, i) => {
-    return {
-      label: { text: n },
-      checkmark: { hidden: !values.includes(i) }
-    };
-  });
-}
-
-function defineList({ items = [], multiSelectEnabled = false, values }) {
-  const list = {
-    type: "list",
-    props: {
-      id: "list",
-      style: 2,
-      bgcolor: $color("#eee"),
-      template,
-      data: getData(items, values)
-    },
-    layout: function(make, view) {
-      make.left.right.bottom.equalTo(view.super.safeArea);
-      if ($("titleBar")) {
-        make.top.equalTo($("titleBar").bottom);
-      } else {
-        make.top.equalTo(view.super.safeArea);
-      }
-    },
-    events: {
-      didSelect: function(sender, indexPath, data) {
-        if (multiSelectEnabled) {
-          const index = indexPath.item;
-          if (values.includes(index)) {
-            values = values.filter(n => n !== index);
+        id: this.id,
+        style: 2,
+        bgcolor: $color("#eee"),
+        data: this.items.map((n, i) => {
+          if (typeof n === "string") {
+            return {
+              label: { text: n },
+              image: { hidden: !this._values.includes(i) }
+            };
           } else {
-            values.push(index);
+            return {
+              label: n,
+              image: { hidden: !this._values.includes(i) }
+            };
           }
-          sender.data = getData(items, values);
-        } else {
-          values = [indexPath.item];
-          sender.data = getData(items, values);
-        }
-      }
-    }
-  };
-  return list;
-}
-
-async function listDialogsSheet({
-  title = "",
-  items,
-  multiSelectEnabled = false,
-  values
-}) {
-  const width = 500;
-  const layout = function(make, view) {
-    make.width.equalTo(width);
-    make.height.equalTo(556);
-    make.center.equalTo(view.super);
-  };
-  return new Promise((resolve, reject) => {
-    const cancelEvent = function(sender) {
-      sender.super.super.super.remove();
-      reject("cancel");
-    };
-    const confrimEvent = function(sender) {
-      const result = sender.super.super
-        .get("list")
-        .data.map((n, i) => {
-          if (n.checkmark.hidden) {
-            return null;
-          } else {
-            return i;
-          }
-        })
-        .filter(n => n !== null);
-      sender.super.super.super.remove();
-      if (!multiSelectEnabled) {
-        resolve(result[0]);
-      } else {
-        resolve(result);
-      }
-    };
-    const titleBarView = defineTitleBarView(title, cancelEvent, confrimEvent);
-    const list = defineList({
-      items,
-      multiSelectEnabled,
-      values
-    });
-    const content = {
-      props: {
-        radius: 10
-      },
-      views: [titleBarView, list],
-      layout: layout
-    };
-    const listDialogs = {
-      props: {
-        id: "listDialogs"
-      },
-      views: [maskView, content],
-      layout: $layout.fillSafeArea
-    };
-    $ui.window.add(listDialogs);
-  });
-}
-
-async function listDialogsPush({
-  title = "",
-  items = [],
-  multiSelectEnabled = false,
-  values
-}) {
-  let done = false;
-  let result = values;
-  return new Promise((resolve, reject) => {
-    $ui.push({
-      props: {
-        title,
-        navButtons: [
-          {
-            title: "Done",
-            handler: () => {
-              done = true;
-              result = $ui.window
-                .get("list")
-                .data.map((n, i) => {
-                  if (n.checkmark.hidden) {
-                    return null;
-                  } else {
-                    return i;
-                  }
-                })
-                .filter(n => n !== null);
-              if (!multiSelectEnabled) result = result[0];
-              $ui.pop();
+        }),
+        template: {
+          props: {
+            bgcolor: $color("white")
+          },
+          views: [
+            {
+              type: "label",
+              props: {
+                id: "label"
+              },
+              layout: (make, view) => {
+                make.top.bottom.inset(0);
+                make.left.inset(20);
+                make.right.inset(50);
+              }
+            },
+            {
+              type: "image",
+              props: {
+                id: "image",
+                symbol: "checkmark",
+                contentMode: 1
+              },
+              layout: (make, view) => {
+                make.top.bottom.right.inset(10);
+                make.width.equalTo(30);
+              }
             }
-          }
-        ]
+          ]
+        }
       },
-      views: [defineList({ items, multiSelectEnabled, values })],
       events: {
-        dealloc: () => {
-          if (done) {
-            resolve(result);
+        didSelect: function(sender, indexPath) {
+          const data = sender.data;
+          if (classThis.multiSelectEnabled) {
+            data[indexPath.item].image.hidden = !data[indexPath.item].image
+              .hidden;
           } else {
-            reject("cancel");
+            data.forEach((n, i) => {
+              n.image.hidden = i !== indexPath.item;
+            });
           }
+          sender.data = data;
         }
       }
-    });
+    };
+    return list;
+  }
+
+  get values() {
+    const filtered = this.view.data
+      .map((n, i) => (n.image.hidden ? -1 : i))
+      .filter(n => n !== -1);
+    if (this.multiSelectEnabled) return filtered;
+    else return filtered[0];
+  }
+}
+
+function presentSheet({
+  title,
+  items,
+  multiSelectEnabled,
+  values,
+  presentMode = 1
+}) {
+  const listView = new ListView({ items, multiSelectEnabled, values });
+  const sheet = new Sheet({
+    title,
+    presentMode,
+    view: listView.definition,
+    doneEvent: sender => listView.values
+  });
+  return new Promise((resolve, reject) => {
+    sheet.promisify(resolve, reject);
+    sheet.present();
   });
 }
 
-async function listDialogs({
+function listDialogs({
   title = "",
   items,
   multiSelectEnabled = false,
-  value,
-  values
+  value = 0,
+  values,
+  presentMode
 }) {
   if (!multiSelectEnabled) {
     values = [value];
   }
-  if ($device.isIpad) {
-    return listDialogsSheet({ title, items, multiSelectEnabled, values });
-  } else {
-    return listDialogsPush({ title, items, multiSelectEnabled, values });
+  if (presentMode === undefined) {
+    presentMode = $device.isIpad ? 2 : 1;
   }
+  return presentSheet({
+    title,
+    items,
+    multiSelectEnabled,
+    values,
+    presentMode
+  });
 }
 
 module.exports = listDialogs;

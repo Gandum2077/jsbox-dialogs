@@ -10,7 +10,7 @@ const src_cross_64x64 =
 const sections = [
   {
     title: "Section 1",
-    fields: [
+    rows: [
       {
         type: "string",
         title: "string",
@@ -37,12 +37,11 @@ const sections = [
         key: "password",
         value: "ssss"
       }
-    ],
-    footer: "This is footer"
+    ]
   },
   {
     title: "Section 2",
-    fields: [
+    rows: [
       {
         type: "boolean",
         title: "boolean",
@@ -78,12 +77,11 @@ const sections = [
         items: ["aaa", "bbb"],
         value: -1
       }
-    ],
-    footer: "This is footer"
+    ]
   },
   {
     title: "Section 3",
-    fields: [
+    rows: [
       {
         type: "datetime",
         title: "datetime",
@@ -116,16 +114,10 @@ const sections = [
         iconEdgeInsets: $insets(15, 15, 15, 15),
         value: () => console.info(1)
       }
-    ],
-    footer: "This is footer"
+    ]
   }
 ];
 
-if ($device.isIpad) {
-  $app.rotateDisabled = true;
-} else {
-  $app.rotateDisabled = false;
-}
 
 $ui.render({
   views: [
@@ -217,9 +209,84 @@ $ui.render({
         tapped: async function(sender) {
           const result = await listDialogs({
             title: "listDialogs",
-            items: [1,2,3,5],
+            items: ["1", "2", "3"],
             multiSelectEnabled: true,
-            values: [0,1]
+            values: [0, 1]
+          });
+          console.info(result);
+        }
+      }
+    },
+    {
+      type: "button",
+      props: {
+        title: "styledTextListDialogs"
+      },
+      layout: function(make, view) {
+        make.size.equalTo($size(200, 50));
+        make.centerX.equalTo(view.super);
+        make.centerY.equalTo(view.sender).offset(150);
+      },
+      events: {
+        tapped: async function(sender) {
+          const result = await listDialogs({
+            title: "styledTextListDialogs",
+            items: [
+              {
+                styledText: {
+                  text: " 优秀   AAA    Tag1 Tag2",
+                  font: $font(17),
+                  color: $color("black"),
+                  styles: [
+                    {
+                      range: $range(0, 4),
+                      color: $color("white"),
+                      bgcolor: $color("green")
+                    },
+                    {
+                      range: $range(13, 4),
+                      color: $color("gray"),
+                      font: $font(12),
+                      obliqueness: 0.3
+                    },
+                    {
+                      range: $range(18, 4),
+                      color: $color("gray"),
+                      font: $font(12),
+                      obliqueness: 0.3
+                    }
+                  ]
+                }
+              },
+              {
+                styledText: {
+                  text: " 良好   BBB    Tag1 Tag2",
+                  font: $font(17),
+                  color: $color("black"),
+                  styles: [
+                    {
+                      range: $range(0, 4),
+                      color: $color("white"),
+                      bgcolor: $color("orange")
+                    },
+                    {
+                      range: $range(13, 4),
+                      color: $color("gray"),
+                      font: $font(12),
+                      obliqueness: 0.3
+                    },
+                    {
+                      range: $range(18, 4),
+                      color: $color("gray"),
+                      font: $font(12),
+                      obliqueness: 0.3
+                    }
+                  ]
+                }
+              }
+            ],
+            multiSelectEnabled: false,
+            value: 0
           });
           console.info(result);
         }
@@ -233,15 +300,19 @@ $ui.render({
       layout: function(make, view) {
         make.size.equalTo($size(200, 50));
         make.centerX.equalTo(view.super);
-        make.centerY.equalTo(view.sender).offset(150);
+        make.centerY.equalTo(view.sender).offset(210);
       },
       events: {
         tapped: async function(sender) {
-          const result = await formDialogs({
-            sections,
-            title: "formDialogs"
-          });
-          console.info(result);
+          try {
+            const result = await formDialogs({
+              sections,
+              title: "formDialogs"
+            });
+            console.info(result);
+          } catch (e) {
+            console.log(e);
+          }
         }
       }
     }
