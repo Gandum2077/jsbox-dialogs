@@ -771,11 +771,11 @@ function defineScrollView(sections, width = 500) {
     },
     views: sectionViews,
     layout: function(make, view) {
-      make.left.right.bottom.inset(0);
+      make.left.right.bottom.equalTo(view.super.safeArea);
       if ($("titleBar")) {
         make.top.equalTo($("titleBar").bottom);
       } else {
-        make.top.inset(0);
+        make.top.equalTo(view.super.safeArea);
       }
     }
   };
