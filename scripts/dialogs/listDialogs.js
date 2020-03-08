@@ -1,5 +1,5 @@
-const Sheet = require("./components/sheet");
-const BaseView = require("./components/baseView");
+const Sheet = require("../components/sheet");
+const BaseView = require("../components/baseView");
 
 class ListView extends BaseView {
   constructor({ items = [], multiSelectEnabled = false, values }) {

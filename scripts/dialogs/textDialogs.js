@@ -1,5 +1,5 @@
-const Sheet = require("./components/sheet");
-const BaseView = require("./components/baseView");
+const Sheet = require("../components/sheet");
+const BaseView = require("../components/baseView");
 
 class TextView extends BaseView {
   constructor({ text, placeholder }) {
