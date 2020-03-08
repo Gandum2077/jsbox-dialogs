@@ -1,3 +1,5 @@
+// General
+
 "OK" = "OK";
 "DONE" = "Done";
-"HELLO_WORLD" = "Hello, World!";
+"CANCEL" = "Cancel";

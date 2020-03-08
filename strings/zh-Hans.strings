@@ -1,3 +1,5 @@
+// General
+
 "OK" = "好的";
 "DONE" = "完成";
-"HELLO_WORLD" = "你好，世界！";
+"CANCEL" = "取消";

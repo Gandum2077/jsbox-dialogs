@@ -145,7 +145,7 @@ class Sheet {
     const doneButton = {
       type: "button",
       props: {
-        title: "Done",
+        title: $l10n("DONE"),
         font: $font(17),
         radius: 0,
         titleColor: $color("white"),

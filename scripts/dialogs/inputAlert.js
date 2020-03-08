@@ -32,10 +32,10 @@ function inputAlert({
     });
 
     alertVC.addAction(
-      new UIAlertAction("Cancel", UIAlertActionStyle.Destructive, cancelEvent)
+      new UIAlertAction($l10n("CANCEL"), UIAlertActionStyle.Destructive, cancelEvent)
     );
     alertVC.addAction(
-      new UIAlertAction("OK", UIAlertActionStyle.Default, confirmEvent)
+      new UIAlertAction($l10n("OK"), UIAlertActionStyle.Default, confirmEvent)
     );
     alertVC.present();
 
