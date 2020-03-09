@@ -3,3 +3,5 @@
 "OK" = "好的";
 "DONE" = "完成";
 "CANCEL" = "取消";
+"ADD" = "添加";
+"DUPLICATE_VALUES" = "取值重复";

@@ -3,3 +3,5 @@
 "OK" = "OK";
 "DONE" = "Done";
 "CANCEL" = "Cancel";
+"ADD" = "Add";
+"DUPLICATE_VALUES" = "Duplicate values";

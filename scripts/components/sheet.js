@@ -41,12 +41,14 @@ class Sheet {
     title = "",
     presentMode = UIModalPresentationStyle.pageSheet,
     bgcolor = $color("white"),
-    navBarHidden = false
+    navBarHidden = false,
+    customButton
   } = {}) {
     REJECT = undefined;
     DONE = false;
     this.title = title;
     this.navBarHidden = navBarHidden;
+    this.customButton = customButton
     this.PSViewController = $objc("PSViewController").invoke("alloc.init");
     this.PSViewControllerView = this.PSViewController.$view();
     this.PSViewControllerView.$setBackgroundColor(bgcolor);
@@ -160,6 +162,36 @@ class Sheet {
         tapped: sender => this.done(sender)
       }
     };
+    const customButton = {
+      type: "button",
+      props: {
+        radius: 0,
+        bgcolor: $color("clear"),
+        hidden: (this.customButton) ? false : true
+      },
+      views: [
+        {
+          type: "image",
+          props: {
+            symbol: this.customButton && this.customButton.symbol ? this.customButton.symbol : undefined,
+            tintColor: $color("white")
+          },
+          layout: function(make, view) {
+            make.edges.insets($insets(5, 5, 5, 5));
+          }
+        }
+      ],
+      layout: function(make, view) {
+        make.centerY.equalTo(view.super);
+        make.size.equalTo($size(32, 32));
+        make.right.inset(80);
+      },
+      events: {
+        tapped: sender => {
+          if (this.customButton.handler) this.customButton.handler()
+        } 
+      }
+    };
     const navBar = {
       type: "view",
       props: {
@@ -169,7 +201,7 @@ class Sheet {
         make.left.top.right.inset(0);
         make.height.equalTo(50);
       },
-      views: [closeButton, titleLabel, doneButton]
+      views: [closeButton, titleLabel, doneButton, customButton]
     };
     return navBar;
   }
