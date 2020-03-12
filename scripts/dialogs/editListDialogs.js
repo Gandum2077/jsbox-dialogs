@@ -49,6 +49,10 @@ class ListView extends BaseView {
         title: "Rename",
         handler: async function(sender, indexPath) {
           const result = await inputAlert({ title: "Rename" })
+          if (!result) {
+            $ui.error($l10n("INVALID_VALUE"));
+            return
+          }
           if (!classThis.allowRepeatable && sender.data.includes(result)) {
             $ui.error($l10n("DUPLICATE_VALUES"));
             return 

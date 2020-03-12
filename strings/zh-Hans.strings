@@ -4,4 +4,5 @@
 "DONE" = "完成";
 "CANCEL" = "取消";
 "ADD" = "添加";
+"INVALID_VALUES" = "取值不合法";
 "DUPLICATE_VALUES" = "取值重复";

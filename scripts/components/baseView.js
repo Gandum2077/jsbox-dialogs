@@ -26,6 +26,19 @@ class BaseView {
       return this._view;
     }
   }
+
+  add(view) {
+    this.view.add(view)
+  }
+
+  moveToFront() {
+    this.view.moveToFront()
+  }
+
+  moveToBack() {
+    this.view.moveToBack()
+  }
+
 }
 
 module.exports = BaseView;

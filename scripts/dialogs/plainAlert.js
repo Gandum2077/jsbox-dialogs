@@ -5,7 +5,12 @@ const {
   UIAlertController
 } = require("./UIAlert");
 
-function plainAlert({ title = "", message } = {}) {
+function plainAlert({
+  title = "",
+  message,
+  cancelText = $l10n("CANCEL"),
+  confirmText = $l10n("OK")
+} = {}) {
   return new Promise((resolve, reject) => {
     const alertVC = new UIAlertController(
       title,
@@ -14,10 +19,10 @@ function plainAlert({ title = "", message } = {}) {
     );
 
     alertVC.addAction(
-      new UIAlertAction($l10n("CANCEL"), UIAlertActionStyle.Destructive, cancelEvent)
+      new UIAlertAction(cancelText, UIAlertActionStyle.Destructive, cancelEvent)
     );
     alertVC.addAction(
-      new UIAlertAction($l10n("OK"), UIAlertActionStyle.Default, confirmEvent)
+      new UIAlertAction(confirmText, UIAlertActionStyle.Default, confirmEvent)
     );
     alertVC.present();
 

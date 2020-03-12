@@ -4,4 +4,5 @@
 "DONE" = "Done";
 "CANCEL" = "Cancel";
 "ADD" = "Add";
+"INVALID_VALUES" = "Invalid values";
 "DUPLICATE_VALUES" = "Duplicate values";

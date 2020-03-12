@@ -10,7 +10,9 @@ function inputAlert({
   message,
   text = "",
   placeholder,
-  type = 0
+  type = 0,
+  cancelText = $l10n("CANCEL"),
+  confirmText = $l10n("OK")
 } = {}) {
   return new Promise((resolve, reject) => {
     const alertVC = new UIAlertController(
@@ -32,10 +34,10 @@ function inputAlert({
     });
 
     alertVC.addAction(
-      new UIAlertAction($l10n("CANCEL"), UIAlertActionStyle.Destructive, cancelEvent)
+      new UIAlertAction(cancelText, UIAlertActionStyle.Destructive, cancelEvent)
     );
     alertVC.addAction(
-      new UIAlertAction($l10n("OK"), UIAlertActionStyle.Default, confirmEvent)
+      new UIAlertAction(confirmText, UIAlertActionStyle.Default, confirmEvent)
     );
     alertVC.present();
 
