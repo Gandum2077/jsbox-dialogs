@@ -215,7 +215,7 @@ $ui.render({
                         styledText: {
                           text: " 优秀   AAA    Tag1 Tag2",
                           font: $font(17),
-                          color: $color("black"),
+                          color: $color("primaryText"),
                           styles: [
                             {
                               range: $range(0, 4),
@@ -224,13 +224,13 @@ $ui.render({
                             },
                             {
                               range: $range(13, 4),
-                              color: $color("gray"),
+                              color: $color("secondaryText"),
                               font: $font(12),
                               obliqueness: 0.3
                             },
                             {
                               range: $range(18, 4),
-                              color: $color("gray"),
+                              color: $color("secondaryText"),
                               font: $font(12),
                               obliqueness: 0.3
                             }
@@ -241,7 +241,7 @@ $ui.render({
                         styledText: {
                           text: " 良好   BBB    Tag1 Tag2",
                           font: $font(17),
-                          color: $color("black"),
+                          color: $color("primaryText"),
                           styles: [
                             {
                               range: $range(0, 4),
@@ -250,13 +250,13 @@ $ui.render({
                             },
                             {
                               range: $range(13, 4),
-                              color: $color("gray"),
+                              color: $color("secondaryText"),
                               font: $font(12),
                               obliqueness: 0.3
                             },
                             {
                               range: $range(18, 4),
-                              color: $color("gray"),
+                              color: $color("secondaryText"),
                               font: $font(12),
                               obliqueness: 0.3
                             }

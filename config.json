@@ -13,7 +13,8 @@
     "idleTimerDisabled": false,
     "autoKeyboardEnabled": false,
     "keyboardToolbarEnabled": false,
-    "rotateDisabled": false
+    "rotateDisabled": false,
+    "theme": "auto"
   },
   "widget": {
     "height": 0,
